@@ -27,16 +27,12 @@
         inherit (pkgs) callPackage;
         own = import ./pkgs {inherit pkgs lib;};
       in {
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
-
         # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
         packages = own // {
           fluttersrc = flutter-hack.legacyPackages.${system}.flutter;
         };
 
-        devenv.shells.default = {
+       devenv.shells.default = {
           name = "my-project";
 
           imports = [
@@ -46,10 +42,10 @@
           ];
 
           # https://devenv.sh/reference/options/
-          packages = [ config.packages.default ];
+          packages = [ config.packages.flutter ];
 
           enterShell = ''
-            hello
+            flutter doctor -v
           '';
         };
 
@@ -58,7 +54,7 @@
         # The usual flake attributes can be defined here, including system-
         # agnostic ones like nixosModule and system-enumerating ones, although
         # those are more easily expressed in perSystem.
-
-      };
+        # overlays.default = _: __: self.packages;
+       };
     };
 }
