@@ -1,15 +1,22 @@
-{ symlinkJoin }: flutter:
+{ symlinkJoin
+, makeWrapper
+}: flutter:
 
 let
   self =
     symlinkJoin {
       name = "${flutter.name}-sdk-links";
-      paths = [ flutter flutter.sdk ];
+      paths = [ flutter flutter.cacheDir flutter.sdk ];
 
-      # The final flutter binary is required to be a git repo.
-      # https://github.com/flutter/flutter/blob/07042fa27cfb0f536776bc87e1f149c0fa3727fc/bin/internal/shared.sh#L224
+      nativeBuildInputs = [ makeWrapper ];
       postBuild = ''
-        ln -s ${flutter.sdk}/.git $out/.git
+        wrapProgram "$out/bin/flutter" \
+          --set-default FLUTTER_ROOT "$out"
+
+        # symlinkJoin seems to be missing the .git directory for some reason.
+        if [ -d '${flutter.sdk}/.git' ]; then
+          ln -s '${flutter.sdk}/.git' "$out"
+        fi
       '';
 
       passthru = flutter.passthru // {

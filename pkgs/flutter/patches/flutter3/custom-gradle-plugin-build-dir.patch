@@ -9,4 +9,4 @@ index 289693f9a4..f9b9a46de7 100644
      compileOnly("com.android.tools.build:gradle:7.3.0")
  }
 +
-+buildDir = File(System.getenv("FLUTTER_GRADLE_PLUGIN_BUILDDIR"))
++buildDir = File(System.getenv("FLUTTER_PLUGIN_BUILD_DIR"))

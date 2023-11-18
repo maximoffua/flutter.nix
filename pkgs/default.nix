@@ -7,7 +7,6 @@
   inherit (pkgs) callPackage;
 
   dart = callPackage ./dart { };
-
   flutterPackages =
     recurseIntoAttrs (callPackage ./flutter {});
   flutter-unwrapped = flutterPackages.stable;
