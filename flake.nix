@@ -26,7 +26,7 @@
       in {
         packages = {
           flutter = own.flutter;
-          # dart = own.dart;
+          dart = own.dart;
         };
 
        devenv.shells.default = {
