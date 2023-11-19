@@ -1,5 +1,4 @@
 { hostPlatform
-, buildDartApplication
 , git
 , which
 , dart
@@ -9,7 +8,11 @@
 , pubspecLockFile
 , vendorHash
 , depsListFile
+, callPackage
 }:
+let
+  inherit (callPackage ../build-support/dart {}) buildDartApplication;
+in
 
 buildDartApplication.override { inherit dart; } rec {
   pname = "flutter-tools";
