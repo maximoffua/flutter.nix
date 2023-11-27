@@ -102,8 +102,8 @@ let
         ln -s "$out/bin/cache/dart-sdk/bin/dart" "$out/bin/dart"
         makeShellWrapper "$out/bin/dart" "$out/bin/flutter" \
           --set-default FLUTTER_ROOT "$out" \
-          --set-default FLUTTER_PLUGIN_BUILD_DIR "''${XDG_CACHE_HOME:-$HOME/.cache}/flutter/build" \
-          --set-default FLUTTER_GRADLE_PROJECT_CACHE "''${XDG_CACHE_HOME:-$HOME/.cache}/flutter/gradle" \
+          --set-default FLUTTER_PLUGIN_BUILD_DIR "/tmp/flutter/build" \
+          --set-default FLUTTER_GRADLE_PROJECT_CACHE "/tmp/flutter/gradle" \
           --set FLUTTER_ALREADY_LOCKED true \
           --add-flags "--disable-dart-dev \$NIX_FLUTTER_TOOLS_VM_OPTIONS $out/bin/cache/flutter_tools.snapshot"
 
