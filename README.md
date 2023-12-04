@@ -12,7 +12,7 @@ This flake provides the following packages:
 
 Will add overlays later.
 
-## With [devenv](https://devenv.sh)
+## With [devenv](https://devenv.sh) and overlays
 
 ```yaml
 # devenv.yaml
@@ -20,7 +20,38 @@ inputs:
   nixpkgs:
     url: github:NixOS/nixpkgs/nixpkgs-unstable
   flutter-nix:
-    url: github:maximoffua/flutter.nix
+    url: github:maximoffua/flutter.nix/stable
+    overlays:
+      - default
+```
+
+```nix
+# devenv.nix
+{
+  pkgs,
+  inputs,
+  ...
+}: {
+  languages.dart.enable = true;
+  languages.dart.package = pkgs.flutter;
+
+  enterShell = ''
+    flutter --version
+  '';
+}
+```
+
+## With [devenv](https://devenv.sh)
+
+If you don't want to use overlays, just use package directly from this flake:
+
+```yaml
+# devenv.yaml
+inputs:
+  nixpkgs:
+    url: github:NixOS/nixpkgs/nixpkgs-unstable
+  flutter-nix:
+    url: github:maximoffua/flutter.nix/stable
 ```
 
 ```nix
@@ -41,4 +72,3 @@ in {
   '';
 }
 ```
-

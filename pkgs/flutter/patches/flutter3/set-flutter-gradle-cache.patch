@@ -11,7 +11,7 @@ index 6d1e3e7345..8ef5c630c8 100644
         _usage = usage,
         _gradleUtils = gradleUtils,
         _androidStudio = androidStudio,
-+       _flutterProjectCacheDir = platform.environment["FLUTTER_GRADLE_PROJECT_CACHE"] ?? "${platform.environment["XDG_CACHE_HOME"]}/gradle",
++       _flutterProjectCacheDir = platform.environment["FLUTTER_GRADLE_PROJECT_CACHE"] ?? "${platform.environment["HOME"]}/.gradle/android_cache",
         _fileSystemUtils = FileSystemUtils(fileSystem: fileSystem, platform: platform),
         _processUtils = ProcessUtils(logger: logger, processManager: processManager);
  
