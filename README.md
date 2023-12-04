@@ -20,7 +20,7 @@ inputs:
   nixpkgs:
     url: github:NixOS/nixpkgs/nixpkgs-unstable
   flutter-nix:
-    url: github:maximoffua/flutter.nix
+    url: github:maximoffua/flutter.nix/stable
     overlays:
       - default
 ```
@@ -51,7 +51,7 @@ inputs:
   nixpkgs:
     url: github:NixOS/nixpkgs/nixpkgs-unstable
   flutter-nix:
-    url: github:maximoffua/flutter.nix
+    url: github:maximoffua/flutter.nix/stable
 ```
 
 ```nix
