@@ -3,55 +3,56 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv";
-    nix2container.url = "github:nlewo/nix2container";
-    nix2container.inputs.nixpkgs.follows = "nixpkgs";
-    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  nixConfig = {
-    extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
-    extra-substituters = "https://devenv.cachix.org";
-  };
-
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
-        inputs.devenv.flakeModule
+        flake-parts.flakeModules.easyOverlay
       ];
-      systems = [ "x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      systems = ["x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
 
-      perSystem = { config, self', inputs', pkgs, system, lib, ... }: {
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
-
-        # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
-        packages = import ./pkgs { inherit pkgs lib; };
-
-        devenv.shells.default = {
-          name = "flutter";
-
-          imports = [
-            # This is just like the imports in devenv.nix.
-            # See https://devenv.sh/guides/using-with-flake-parts/#import-a-devenv-module
-            # ./devenv-foo.nix
-          ];
-
-          # https://devenv.sh/reference/options/
-          packages = [ config.packages.default ];
-
-          enterShell = ''
-            flutter --version
-          '';
+      perSystem = {
+        config,
+        self',
+        inputs',
+        pkgs,
+        system,
+        lib,
+        ...
+      }: {
+        packages = let
+          own = import ./pkgs {inherit pkgs lib;};
+        in {
+          inherit (own) flutter dart flutter-unwrapped;
+          default = own.flutter;
         };
 
-      };
-      flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
+        apps = let
+          mkApp = name: let pkg = self'.packages.${name}; in {
+            type = "app";
+            program = "${pkg}/bin/${name}";
+          };
+        in rec {
+          flutter = mkApp "flutter";
+          dart = mkApp "dart";
+          default = flutter;
+        };
 
+        checks.test = pkgs.stdenvNoCC.mkDerivation {
+          name = "flutter-doctor";
+          src = ./.;
+          nativeBuildInputs = [self'.packages.flutter];
+          dontBuild = true;
+          installPhase = ''
+            mkdir $out
+          '';
+          checkPhase = ''
+            flutter doctor
+          '';
+        };
       };
+      flake = {};
     };
 }
