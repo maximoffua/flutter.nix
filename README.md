@@ -2,17 +2,25 @@
 
 This repository is made for fixing issues with flutter in nixpkgs, specifically [#260278](https://github.com/NixOS/nixpkgs/issues/260278).
 
+Big thanks:
+- [hacker1024](https://github.com/hacker1024/nixpkgs/tree/feature/flutter-from-source) for his Nix derivation for Flutter
+- [Fructokinase](https://github.com/Fructokinase/nixpkgs/tree/flutter) for Gradle/Android patches
+
 # Getting started
 
 This flake provides the following packages:
 
-- packages.${system}.flutter
-- packages.${system}.dart
-- packages.${system}.flutter-unwrapped
+- `packages.${system}.flutter`
+- `packages.${system}.dart`
+- `packages.${system}.flutter-unwrapped`
 
-Will add overlays later.
+and an overlay:
+
+- `overlays.default`
 
 ## With [devenv](https://devenv.sh) and overlays
+
+> There might be an issue with overlay is not applied properly
 
 ```yaml
 # devenv.yaml
@@ -43,7 +51,7 @@ inputs:
 
 ## With [devenv](https://devenv.sh)
 
-If you don't want to use overlays, just use package directly from this flake:
+If you have issues with overlay, just use package directly from this flake:
 
 ```yaml
 # devenv.yaml
@@ -72,3 +80,4 @@ in {
   '';
 }
 ```
+
