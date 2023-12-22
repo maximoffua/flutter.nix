@@ -18,7 +18,6 @@
 , extraCFlags ? [ ]
 , extraLinkerFlags ? [ ]
 , makeWrapper
-, runCommandLocal
 , writeShellScript
 , wrapGAppsHook
 , git
@@ -26,13 +25,13 @@
 , pkg-config
 , atk
 , cairo
+, fontconfig
 , gdk-pixbuf
 , glib
 , gtk3
 , harfbuzz
 , libepoxy
 , pango
-, fontconfig
 , libX11
 , xorgproto
 , libdeflate
@@ -40,7 +39,6 @@
 , cmake
 , ninja
 , clang
-, lndir
 , symlinkJoin
 }:
 
@@ -56,7 +54,7 @@ let
       };
     }));
 
-  cacheDir = symlinkJoin rec {
+  cacheDir = symlinkJoin {
     name = "flutter-cache-dir";
     paths = builtins.attrValues platformArtifacts;
     postBuild = ''
@@ -80,6 +78,7 @@ let
   appRuntimeDeps = lib.optionals supportsLinuxDesktopTarget [
     atk
     cairo
+    fontconfig
     gdk-pixbuf
     glib
     gtk3
@@ -88,7 +87,6 @@ let
     pango
     libX11
     libdeflate
-    fontconfig
   ];
 
   # Development packages required for compilation.
@@ -127,7 +125,6 @@ in
     ++ lib.optionals supportsLinuxDesktopTarget [ glib wrapGAppsHook ];
 
   passthru = flutter.passthru // {
-    inherit (flutter) version;
     unwrapped = flutter;
     inherit cacheDir;
   };

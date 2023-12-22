@@ -3,9 +3,7 @@
 , patches
 , dart
 , src
-, pubspecLockFile
-, vendorHash
-, depsListFile
+, pubspecLock
 , lib
 , stdenv
 , callPackage
@@ -13,8 +11,7 @@
 , darwin
 , git
 , which
-, jq
-, runCommand
+, buildDartApplication
 }:
 
 let
@@ -22,16 +19,17 @@ let
     inherit dart version;
     flutterSrc = src;
     inherit patches;
-    inherit pubspecLockFile vendorHash depsListFile;
+    inherit pubspecLock;
+    inherit buildDartApplication;
   };
-  formatTimestamp = format: (builtins.readFile (runCommand "timestamp" {} "echo -n `date '+${format}'` > $out"));
+
   unwrapped =
     stdenv.mkDerivation {
       name = "flutter-${version}-unwrapped";
       inherit src patches version;
 
       buildInputs = [ git ];
-      nativeBuildInputs = [ makeWrapper jq ]
+      nativeBuildInputs = [ makeWrapper ]
         ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.DarwinTools ];
 
       preConfigure = ''
@@ -53,10 +51,9 @@ let
         git init -b nixpkgs
         GIT_AUTHOR_NAME=Nixpkgs GIT_COMMITTER_NAME=Nixpkgs \
         GIT_AUTHOR_EMAIL= GIT_COMMITTER_EMAIL= \
-        GIT_AUTHOR_DATE='01/01/1970 00:00:00 +0000' \
-        GIT_COMMITTER_DATE='01/01/1970 00:00:00 +0000' \
+        GIT_AUTHOR_DATE='1/1/1970 00:00:00 +0000' GIT_COMMITTER_DATE='1/1/1970 00:00:00 +0000' \
           git commit --allow-empty -m "Initial commit"
-        (. '${../deterministic-git}'; make_deterministic_repo .)
+        (. '${../build-support/deterministic-git}'; make_deterministic_repo .)
 
         mkdir -p bin/cache
 
@@ -69,7 +66,7 @@ let
         # application attempts to read its own package_config.json to find these
         # assets at runtime.
         mkdir -p packages/flutter_tools/.dart_tool
-        ln -s '${tools.dartDeps.packageConfig}' packages/flutter_tools/.dart_tool/package_config.json
+        ln -s '${tools.pubcache}/package_config.json' packages/flutter_tools/.dart_tool/package_config.json
 
         echo -n "${version}" > version
         cat <<EOF > bin/cache/flutter.version.json
@@ -102,8 +99,6 @@ let
         ln -s "$out/bin/cache/dart-sdk/bin/dart" "$out/bin/dart"
         makeShellWrapper "$out/bin/dart" "$out/bin/flutter" \
           --set-default FLUTTER_ROOT "$out" \
-          --set-default FLUTTER_PLUGIN_BUILD_DIR "/tmp/flutter/build" \
-          --set-default FLUTTER_GRADLE_PROJECT_CACHE "/tmp/flutter/gradle" \
           --set FLUTTER_ALREADY_LOCKED true \
           --add-flags "--disable-dart-dev \$NIX_FLUTTER_TOOLS_VM_OPTIONS $out/bin/cache/flutter_tools.snapshot"
 

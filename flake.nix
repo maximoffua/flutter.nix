@@ -6,7 +6,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ {flake-parts, nixpkgs, ...}:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         flake-parts.flakeModules.easyOverlay

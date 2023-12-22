@@ -3,9 +3,6 @@
 , callPackage
 , autoPatchelfHook
 , src
-, gtk3
-, glib
-, fontconfig
 }:
 
 (stdenv.mkDerivation {
@@ -13,7 +10,6 @@
   inherit src;
 
   nativeBuildInputs = lib.optional stdenv.hostPlatform.isLinux autoPatchelfHook;
-  buildInputs = [glib fontconfig gtk3];
 
   installPhase = ''
     runHook preInstall

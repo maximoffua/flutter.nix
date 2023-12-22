@@ -1,18 +1,13 @@
 { hostPlatform
+, buildDartApplication
 , git
 , which
 , dart
 , version
 , flutterSrc
 , patches ? [ ]
-, pubspecLockFile
-, vendorHash
-, depsListFile
-, callPackage
+, pubspecLock
 }:
-let
-  inherit (callPackage ../build-support/dart {}) buildDartApplication;
-in
 
 buildDartApplication.override { inherit dart; } rec {
   pname = "flutter-tools";
@@ -50,5 +45,5 @@ buildDartApplication.override { inherit dart; } rec {
     popd
   '';
 
-  inherit pubspecLockFile vendorHash depsListFile;
+  inherit pubspecLock;
 }
