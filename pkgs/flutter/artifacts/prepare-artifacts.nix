@@ -13,10 +13,11 @@ in
   inherit src;
 
   nativeBuildInputs = lib.optional stdenv.hostPlatform.isLinux autoPatchelfHook;
-  patchPhase = ''
-    echo ${src.platform}
-    runHook prePatch
-    runHook postPatch
+
+  postPatch = ''
+    echo '>>> current platform=${src.platform}'
+    echo '>>> Path: ${toString ./overrides/${src.platform}.nix}'
+    echo '>>> String: ${ofile}'
   '';
 
   installPhase = ''
@@ -28,7 +29,8 @@ in
     runHook postInstall
   '';
 }).overrideAttrs (
-  if builtins.pathExists ofile
-  then callPackage ofile { }
+# The following fails, because the path gets corrupted
+  if builtins.pathExists ./overrides/${src.platform}.nix
+  then callPackage ./overrides/${src.platform}.nix { }
   else ({ ... }: { })
 )
