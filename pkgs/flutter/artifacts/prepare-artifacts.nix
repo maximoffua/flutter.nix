@@ -4,12 +4,20 @@
 , autoPatchelfHook
 , src
 }:
+let
+ ofile = (builtins.toString ./overrides) + "/${src.platform}.nix";
+in
 
 (stdenv.mkDerivation {
   inherit (src) name;
   inherit src;
 
   nativeBuildInputs = lib.optional stdenv.hostPlatform.isLinux autoPatchelfHook;
+  patchPhase = ''
+    echo ${src.platform}
+    runHook prePatch
+    runHook postPatch
+  '';
 
   installPhase = ''
     runHook preInstall
@@ -20,7 +28,7 @@
     runHook postInstall
   '';
 }).overrideAttrs (
-  if builtins.pathExists ./overrides/${src.platform}.nix
-  then callPackage ./overrides/${src.platform}.nix { }
+  if builtins.pathExists ofile
+  then callPackage ofile { }
   else ({ ... }: { })
 )
