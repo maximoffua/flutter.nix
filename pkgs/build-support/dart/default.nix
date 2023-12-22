@@ -4,5 +4,5 @@
   dartHooks = callPackage ./build-dart-application/hooks {};
   buildDartApplication = callPackage ./build-dart-application { inherit pub2nix dartHooks; };
 in {
-  inherit buildDartApplication fetchDartDeps pub2nix;
+  inherit buildDartApplication fetchDartDeps pub2nix dartHooks;
 }

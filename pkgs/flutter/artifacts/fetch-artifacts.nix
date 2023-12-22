@@ -4,6 +4,7 @@
 , cacert
 , unzip
 
+, archPlatform
 , platform
 , flutter
 , hash
@@ -25,9 +26,12 @@ let
     # Use a version of Flutter with just enough capabilities to download
     # artifacts.
     supportedTargetPlatforms = [ ];
+    flutter = flutter.unwrapped.override {
+      inherit archPlatform;
+    };
   };
 in
-runCommand "flutter-artifacts-${platform}"
+runCommand "flutter-artifacts-${platform}-${archPlatform}"
 {
   nativeBuildInputs = [ xorg.lndir flutter' unzip ];
 

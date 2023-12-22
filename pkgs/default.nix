@@ -19,6 +19,6 @@
   flutter = flutterPackages.wrapFlutter flutter-unwrapped;
 in {
   inherit dart flutter flutter-unwrapped;
-  inherit (support) buildDartApplication buildFlutterApplication;
+  inherit (support) buildDartApplication buildFlutterApplication pub2nix dartHooks;
   default = flutter;
 }

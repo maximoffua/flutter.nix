@@ -51,6 +51,7 @@ let
         inherit platform;
         flutter = callPackage ./wrapper.nix { inherit flutter; };
         hash = artifactHashes.${platform}.${stdenv.hostPlatform.system} or "";
+        archPlatform = stdenv.hostPlatform.system;
       };
     }));
 

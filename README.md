@@ -5,6 +5,7 @@ This repository is made for fixing issues with flutter in nixpkgs, specifically 
 Big thanks:
 - [hacker1024](https://github.com/hacker1024/nixpkgs/tree/feature/flutter-from-source) for his Nix derivation for Flutter
 - [Fructokinase](https://github.com/Fructokinase/nixpkgs/tree/flutter) for Gradle/Android patches
+- [FlafyDev](https://github.com/NixOS/nixpkgs/pull/262789#issuecomment-1853882072) for comments
 
 # Getting started
 
@@ -81,3 +82,10 @@ in {
 }
 ```
 
+## Update version
+
+There is a nix script for trying to download artifacts and calculate their hash sums:
+
+```sh
+nix build --keep-going --impure -L --expr 'import ./try-prefetch.nix'
+```

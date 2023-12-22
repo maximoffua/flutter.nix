@@ -12,6 +12,7 @@
 , git
 , which
 , buildDartApplication
+, archPlatform ? stdenv.hostPlatform.system
 }:
 
 let
@@ -20,7 +21,7 @@ let
     flutterSrc = src;
     inherit patches;
     inherit pubspecLock;
-    inherit buildDartApplication;
+    inherit buildDartApplication archPlatform;
   };
 
   unwrapped =
