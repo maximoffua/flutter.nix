@@ -1,0 +1,23 @@
+name: Build flake packages
+on:
+  push:
+    branches:
+      - main
+      - stable
+      - beta
+      - ci
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Cachix
+        uses: cachix/cachix-action@v14
+        with:
+          name: mtech
+      - name: Build the flake
+        run: nix build
