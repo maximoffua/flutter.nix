@@ -4,6 +4,7 @@
 , dart
 , src
 , pubspecLock
+, artifactHashes ? null
 , lib
 , stdenv
 , callPackage
@@ -11,26 +12,26 @@
 , darwin
 , git
 , which
+, jq
 , buildDartApplication
-, archPlatform ? stdenv.hostPlatform.system
-}:
-
-let
-  tools = callPackage ./flutter-tools.nix {
+, flutterTools ? callPackage ./flutter-tools.nix {
     inherit dart version;
     flutterSrc = src;
     inherit patches;
     inherit pubspecLock;
-    inherit buildDartApplication archPlatform;
-  };
+    inherit buildDartApplication;
+    systemPlatform = stdenv.hostPlatform.system;
+  }
+}:
 
+let
   unwrapped =
     stdenv.mkDerivation {
       name = "flutter-${version}-unwrapped";
       inherit src patches version;
 
       buildInputs = [ git ];
-      nativeBuildInputs = [ makeWrapper ]
+      nativeBuildInputs = [ makeWrapper jq ]
         ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.DarwinTools ];
 
       preConfigure = ''
@@ -61,13 +62,13 @@ let
         # Add a flutter_tools artifact stamp, and build a snapshot.
         # This is the Flutter CLI application.
         echo "$(git rev-parse HEAD)" > bin/cache/flutter_tools.stamp
-        ln -s '${tools}/share/flutter_tools.snapshot' bin/cache/flutter_tools.snapshot
+        ln -s '${flutterTools}/share/flutter_tools.snapshot' bin/cache/flutter_tools.snapshot
 
         # Some of flutter_tools's dependencies contain static assets. The
         # application attempts to read its own package_config.json to find these
         # assets at runtime.
         mkdir -p packages/flutter_tools/.dart_tool
-        ln -s '${tools.pubcache}/package_config.json' packages/flutter_tools/.dart_tool/package_config.json
+        ln -s '${flutterTools.pubcache}/package_config.json' packages/flutter_tools/.dart_tool/package_config.json
 
         echo -n "${version}" > version
         cat <<EOF > bin/cache/flutter.version.json
@@ -122,7 +123,8 @@ let
       '';
 
       passthru = {
-        inherit dart engineVersion tools;
+        inherit dart engineVersion artifactHashes;
+        tools = flutterTools;
         # The derivation containing the original Flutter SDK files.
         # When other derivations wrap this one, any unmodified files
         # found here should be included as-is, for tooling compatibility.

@@ -15,7 +15,7 @@
     inherit (support) buildDartApplication;
     inherit dart;
   });
-  flutter-unwrapped = flutterPackages.stable;
+  flutter-unwrapped = flutterPackages.unwrapped;
   flutter = flutterPackages.wrapFlutter flutter-unwrapped;
 in {
   inherit dart flutter flutter-unwrapped;

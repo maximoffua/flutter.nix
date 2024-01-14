@@ -15,12 +15,12 @@ index 366268d..2b3228e 100644
        '--delete',
        '--filter',
        '- .DS_Store/',
-+      "--filter",
-+      "- Versions/A/FlutterMacOS",
++      '--filter',
++      '- Versions/A/FlutterMacOS',
        basePath,
        environment.outputDir.path,
      ]);
-@@ -71,15 +73,42 @@ abstract class UnpackMacOS extends Target {
+@@ -71,15 +73,40 @@ abstract class UnpackMacOS extends Target {
        );
      }
  
@@ -39,7 +39,6 @@ index 366268d..2b3228e 100644
        .childDirectory('Versions')
        .childDirectory('A')
        .childFile('FlutterMacOS');
-+
      final String frameworkBinaryPath = frameworkBinary.path;
 +
 +    // flutter's build folder is user writable, fix the retained nix store permissions
@@ -53,14 +52,13 @@ index 366268d..2b3228e 100644
 +    ]);
 +
 +    srcFrameworkBinary.copySync(frameworkBinaryPath);
-+
      if (!frameworkBinary.existsSync()) {
        throw Exception('Binary $frameworkBinaryPath does not exist, cannot thin');
      }
 +    if (frameworkBinary.statSync().type == FileSystemEntityType.link) {
 +      throw Exception('Binary $frameworkBinaryPath is a symlink, cannot thin');
 +    }
-     _thinFramework(environment, frameworkBinaryPath);
+     await _thinFramework(environment, frameworkBinaryPath);
    }
  
 diff --git a/packages/flutter_tools/bin/macos_assemble.sh b/packages/flutter_tools/bin/macos_assemble.sh

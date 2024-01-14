@@ -4,10 +4,6 @@
 , autoPatchelfHook
 , src
 }:
-let
- ofile = (builtins.toString ./overrides) + "/${src.platform}.nix";
-in
-
 (stdenv.mkDerivation {
   inherit (src) name;
   inherit src;
@@ -23,7 +19,7 @@ in
     runHook postInstall
   '';
 }).overrideAttrs (
-  if builtins.pathExists ofile
-  then callPackage ofile { }
+  if builtins.pathExists ./overrides/${src.flutterPlatform}.nix
+  then callPackage ./overrides/${src.flutterPlatform}.nix { }
   else ({ ... }: { })
 )

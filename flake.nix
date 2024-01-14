@@ -8,10 +8,10 @@
 
   outputs = inputs @ {flake-parts, nixpkgs, ...}:
     flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
       imports = [
         flake-parts.flakeModules.easyOverlay
       ];
-      systems = ["x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
 
       perSystem = {
         config,
@@ -21,20 +21,23 @@
         system,
         lib,
         ...
-      }: {
-        packages = let
-          own = import ./pkgs {inherit pkgs lib;};
-        in {
-          inherit (own) flutter dart flutter-unwrapped;
-          default = own.flutter;
-        };
-
-        apps = let
+      }: let
+          ownPkgs = import ./pkgs {inherit pkgs lib;};
           mkApp = name: let pkg = self'.packages.${name}; in {
             type = "app";
             program = "${pkg}/bin/${name}";
           };
-        in rec {
+        in {
+        overlayAttrs = {
+          inherit (ownPkgs) dart flutter
+            buildDartApplication buildFlutterApplication pub2nix dartHooks;
+        };
+        packages = {
+          inherit (ownPkgs) flutter dart flutter-unwrapped;
+          default = ownPkgs.flutter;
+        };
+
+        apps = rec {
           flutter = mkApp "flutter";
           dart = mkApp "dart";
           default = flutter;

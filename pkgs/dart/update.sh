@@ -8,12 +8,22 @@ log() {
   >&2 echo "DART_UPDATER: $@"
 }
 
-# fetch the latest version number from upstream
-NEW_VER_DETAILS=$(curl -sL https://storage.googleapis.com/dart-archive/channels/stable/release/latest/VERSION)
-NEW_VER=$(jq -r '.version' <<< "$NEW_VER_DETAILS")
+NEW_VER=${1}
+if [[ -z $NEW_VER ]]; then
+  # fetch the latest version number from upstream
+  NEW_VER_DETAILS=$(curl -sL https://storage.googleapis.com/dart-archive/channels/stable/release/latest/VERSION)
+  NEW_VER=$(jq -r '.version' <<< "$NEW_VER_DETAILS")
+fi
 
 MY_PATH=$(dirname $(realpath "$0"))
 SRC_FILE=$(mktemp)
+
+CURRENT_VER=$(awk '/version = /{print $4}' $MY_PATH/sources.nix | tr -d \"\;)
+if [[ $CURRENT_VER = $NEW_VER ]]; then
+  log "aleready up to date: $CURRENT_VER = $NEW_VER"
+  rm $SRC_FILE
+  exit 0
+fi
 
 log "file to write is $SRC_FILE"
 
