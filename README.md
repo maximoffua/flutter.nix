@@ -13,15 +13,14 @@ This flake provides the following packages:
 
 - `packages.${system}.flutter`
 - `packages.${system}.dart`
-- `packages.${system}.flutter-unwrapped`
 
 and an overlay:
 
 - `overlays.default`
 
-## With [devenv](https://devenv.sh) and overlays
+See #1 for examples of usage with flakes.
 
-> There might be an issue with overlay is not applied properly
+## With [devenv](https://devenv.sh) and overlays
 
 ```yaml
 # devenv.yaml
@@ -84,8 +83,8 @@ in {
 
 ## Update version
 
-There is a nix script for trying to download artifacts and calculate their hash sums:
+There is a Python script which will obtain the latest Flutter version, fetch info and update hash sums.
 
 ```sh
-nix build --keep-going --impure -L --expr 'import ./try-prefetch.nix'
+./update/update.py
 ```
