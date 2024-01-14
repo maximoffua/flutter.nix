@@ -1,4 +1,4 @@
-{ archPlatform
+{ systemPlatform
 , buildDartApplication
 , git
 , which
@@ -35,7 +35,7 @@ buildDartApplication.override { inherit dart; } rec {
   '';
 
   dartEntryPoints."flutter_tools.snapshot" = "bin/flutter_tools.dart";
-  dartCompileFlags = [ "--define=NIX_FLUTTER_HOST_PLATFORM=${archPlatform}" ];
+  dartCompileFlags = [ "--define=NIX_FLUTTER_HOST_PLATFORM=${systemPlatform}" ];
 
   # The Dart wrapper launchers are useless for the Flutter tool - it is designed
   # to be launched from a snapshot by the SDK.
