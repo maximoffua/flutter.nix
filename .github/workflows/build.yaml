@@ -7,7 +7,7 @@ on:
       - beta
       - ci
 jobs:
-  format:
+  build-flake:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
