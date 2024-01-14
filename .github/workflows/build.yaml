@@ -19,5 +19,6 @@ jobs:
         uses: cachix/cachix-action@v14
         with:
           name: mtech
+          authToken: ${{ secrets.CACHIX_TOKEN }}
       - name: Build the flake
         run: nix build
