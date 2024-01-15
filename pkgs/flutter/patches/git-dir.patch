@@ -1,16 +1,3 @@
-diff --git a/dev/bots/prepare_package.dart b/dev/bots/prepare_package.dart
-index 9f33a22cc3..c46255742c 100644
---- a/dev/bots/prepare_package.dart
-+++ b/dev/bots/prepare_package.dart
-@@ -602,7 +602,7 @@ class ArchiveCreator {
- 
-   Future<String> _runGit(List<String> args, {Directory? workingDirectory}) {
-     return _processRunner.runProcess(
--      <String>['git', ...args],
-+      <String>['git', '--git-dir', '.git', ...args],
-       workingDirectory: workingDirectory ?? flutterRoot,
-     );
-   }
 diff --git a/packages/flutter_tools/lib/src/commands/downgrade.dart b/packages/flutter_tools/lib/src/commands/downgrade.dart
 index a58b75c009..02da0daeb7 100644
 --- a/packages/flutter_tools/lib/src/commands/downgrade.dart
