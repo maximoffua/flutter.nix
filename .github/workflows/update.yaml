@@ -5,8 +5,11 @@ on:
     - cron: '0 0 * * 0' # runs weekly on Sunday at 00:00
 
 jobs:
-  lockfile:
+  flutter:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -14,11 +17,20 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Update Flutter version
-        run: ./update/update.py
+        id: update
+        run: ./update/update.py >> "$GITHUB_OUTPUT"
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@main
         with:
-          pr-title: "Update flake.lock" # Title of PR to be created
+          commit-msg: |
+            update Flutter to ${{steps.update.outputs.flutterVersion}} and flake.lock
+
+            Flutter: ${{steps.update.outputs.flutterVersion}}
+            Dart: ${{steps.update.outputs.dartVersion}}
+            Engine: ${{steps.update.outputs.engine}}
+          pr-assignees: maximoffua
+          pr-reviewers: maximoffua
+          pr-title: "Update Flutter" # Title of PR to be created
           pr-labels: |                  # Labels to be set on the PR
             dependencies
             automated

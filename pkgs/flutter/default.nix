@@ -15,7 +15,7 @@ let
     , artifactHashes
     , ...
     }:
-      assert lib.asserts.assertMsg (dartVersion == dart.version)
+      assert lib.asserts.assertMsg (lib.strings.hasPrefix dartVersion dart.version)
         ''Dart version mismatch: (pkgs) ${builtins.toString dart.version} != ${dartVersion} (required)
           Hint: run `pkgs/dart/update.sh <version>` to fetch required version.'';
     let

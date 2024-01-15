@@ -8,11 +8,17 @@ log() {
   >&2 echo "DART_UPDATER: $@"
 }
 
+latest_version() {
+  local channel=${1:-stable}
+  local NEW_VER_DETAILS=$(curl -sL https://storage.googleapis.com/dart-archive/channels/$channel/release/latest/VERSION)
+  jq -r '.version' <<< "$NEW_VER_DETAILS"
+}
+
 NEW_VER=${1}
+CHANNEL=${CHANNEL:-${FLUTTER_CHANNEL:-stable}}
 if [[ -z $NEW_VER ]]; then
   # fetch the latest version number from upstream
-  NEW_VER_DETAILS=$(curl -sL https://storage.googleapis.com/dart-archive/channels/stable/release/latest/VERSION)
-  NEW_VER=$(jq -r '.version' <<< "$NEW_VER_DETAILS")
+  NEW_VER=$(latest_version $FLUTTER_CHANNEL)
 fi
 
 MY_PATH=$(dirname $(realpath "$0"))
@@ -27,6 +33,12 @@ fi
 
 log "file to write is $SRC_FILE"
 
+if ! curl -sL https://storage.googleapis.com/dart-archive/channels/$CHANNEL/release/$NEW_VER/VERSION; then
+  NEW_VER=$(latest_version ${FLUTTER_CHANNEL:-beta})
+  CHANNEL=${FLUTTER_CHANNEL:-beta}
+  log "Using $CHANNEL $NEW_VER"
+fi
+
 PRELUDE="let version = \"$NEW_VER\"; in
 { fetchurl }: {
   versionUsed = version;"
@@ -38,7 +50,7 @@ log "wrote prelude"
 #   - $1: VARIABLE NAME of (table of nix platform -> dart platform mappings) ("DARWIN_PLATFORMS"|"LIN_PLATFORMS")
 #   - $2: Dart-OS ("macos"|"linux")
 write_for_platform() {
-  BASE_OF_ALL_URLS='https://storage.googleapis.com/dart-archive/channels/stable/release'
+  BASE_OF_ALL_URLS="https://storage.googleapis.com/dart-archive/channels/$CHANNEL/release"
   BASE_URL_WRITTEN="$BASE_OF_ALL_URLS/\${version}/sdk"
   BASE_URL_FETCHED="$BASE_OF_ALL_URLS/$NEW_VER/sdk"
 
