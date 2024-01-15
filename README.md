@@ -1,11 +1,8 @@
+[![FlakeHub](https://img.shields.io/endpoint?url=https://flakehub.com/f/maximoffua/flutter.nix/badge)](https://flakehub.com/flake/maximoffua/flutter.nix)
+
 # Flutter SDK for Nix
 
 This repository is made for fixing issues with flutter in nixpkgs, specifically [#260278](https://github.com/NixOS/nixpkgs/issues/260278).
-
-Big thanks:
-- [hacker1024](https://github.com/hacker1024/nixpkgs/tree/feature/flutter-from-source) for his Nix derivation for Flutter
-- [Fructokinase](https://github.com/Fructokinase/nixpkgs/tree/flutter) for Gradle/Android patches
-- [FlafyDev](https://github.com/NixOS/nixpkgs/pull/262789#issuecomment-1853882072) for comments
 
 # Getting started
 
@@ -18,7 +15,38 @@ and an overlay:
 
 - `overlays.default`
 
-See #1 for examples of usage with flakes.
+## With flakes
+
+Add this flake as an input and either use:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flutter-nix.url = "github:maximoffua/flutter.nix/stable"; # remove `/stable` to use main branch
+          # stable can be replaced with specific tag matching Flutter versions, e.g. 3.16.7
+  };
+ 
+  outputs = { self, flutter-nix }:
+  let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+      # add overlay from flutter-nix, which replaces dart and flutter packages
+      overlays = [
+        flutter.nix.overlays.default
+      ];
+    };
+  in {
+    # Use flutter-nix in your outputs or use `pkgs`,
+    # which is nixpkgs for the system, with flutter.nix's overlay applied.
+
+    packages.flutter = flutter-nix.packages.${system}.flutter;
+  };
+}
+```
+
+See #1 for more examples of usage with flakes.
 
 ## With [devenv](https://devenv.sh) and overlays
 
@@ -88,3 +116,12 @@ There is a Python script which will obtain the latest Flutter version, fetch inf
 ```sh
 ./update/update.py
 ```
+
+## Contributors
+
+Big thanks:
+
+- [hacker1024](https://github.com/hacker1024/nixpkgs/tree/feature/flutter-from-source) for his Nix derivation for Flutter
+- [Fructokinase](https://github.com/Fructokinase/nixpkgs/tree/flutter) for Gradle/Android patches
+- [FlafyDev](https://github.com/NixOS/nixpkgs/pull/262789#issuecomment-1853882072) for comments
+
