@@ -14,11 +14,11 @@ latest_version() {
   jq -r '.version' <<< "$NEW_VER_DETAILS"
 }
 
-NEW_VER=${1}
+NEW_VER=${1:-""}
 CHANNEL=${CHANNEL:-${FLUTTER_CHANNEL:-stable}}
 if [[ -z $NEW_VER ]]; then
   # fetch the latest version number from upstream
-  NEW_VER=$(latest_version $FLUTTER_CHANNEL)
+  NEW_VER=$(latest_version $CHANNEL)
 fi
 
 MY_PATH=$(dirname $(realpath "$0"))
