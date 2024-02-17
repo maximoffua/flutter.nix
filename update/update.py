@@ -232,6 +232,7 @@ def find_versions(flutter_version=None, channel="stable"):
 def main():
     parser = argparse.ArgumentParser(description='Update Flutter in Nixpkgs')
     parser.add_argument('--version', type=str, help='Specify Flutter version')
+    parser.add_argument('--dart-version', type=str, help='Specify Dart version')
     parser.add_argument('--channel', type=str, help='Release channel for Flutter [default=stable]', default='stable')
     parser.add_argument('--artifact-hashes', action='store_true',
                         help='Whether to get artifact hashes')
@@ -248,6 +249,10 @@ def main():
     else:
         dart_build_version = dart_version
         dart_channel = args.channel
+
+    if args.dart_version is not None:
+        dart_version = args.dart_version
+        dart_build_version = dart_version
 
     sources_dir = f"{FLAKE}/pkgs/flutter/sources"
     info = {}
