@@ -34,7 +34,7 @@ Add this flake as an input and either use:
       inherit system;
       # add overlay from flutter-nix, which replaces dart and flutter packages
       overlays = [
-        flutter.nix.overlays.default
+        flutter-nix.overlays.default
       ];
     };
   in {
