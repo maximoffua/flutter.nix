@@ -1,13 +1,13 @@
 {
-  "version": "3.19.4",
-  "engineVersion": "a5c24f538d05aaf66f7972fb23959d8cafb9f95a",
-  "dartVersion": "3.3.2",
-  "flutterHash": "sha256-y1zU74xU8xwJAJM2TlWTbyzySvKUZ42tA6hTIYE6ies=",
+  "version": "3.19.6",
+  "engineVersion": "c4cd48e186460b32d44585ce3c103271ab676355",
+  "dartVersion": "3.3.4",
+  "flutterHash": "sha256-/gA3Ip1pnhKlHF/zOLvhC/9HO6BG31KQ5bUtlZENHVw=",
   "artifactHashes": {
     "android": {
-      "aarch64-linux": "sha256-MgDFaeQ/1cSGY751I7bExD/x8ZLw3youhpXlvcSuDaE=",
-      "x86_64-darwin": "sha256-MgDFaeQ/1cSGY751I7bExD/x8ZLw3youhpXlvcSuDaE=",
-      "x86_64-linux": "sha256-MgDFaeQ/1cSGY751I7bExD/x8ZLw3youhpXlvcSuDaE="
+      "aarch64-linux": "sha256-u0+O4PftSt9If1AMDRS/P6FQwZtsTpRGGZflhY56xAY=",
+      "x86_64-darwin": "sha256-u0+O4PftSt9If1AMDRS/P6FQwZtsTpRGGZflhY56xAY=",
+      "x86_64-linux": "sha256-u0+O4PftSt9If1AMDRS/P6FQwZtsTpRGGZflhY56xAY="
     },
     "fuchsia": {
       "aarch64-linux": "sha256-eu0BERdz53CkSexbpu3KA7O6Q4g0s9SGD3t1Snsk3Fk=",
@@ -15,34 +15,34 @@
       "x86_64-linux": "sha256-eu0BERdz53CkSexbpu3KA7O6Q4g0s9SGD3t1Snsk3Fk="
     },
     "ios": {
-      "aarch64-linux": "sha256-mqHe53QP6SCFkSkTSaoORAmCYnXYsk/MqgsIv3B2nZk=",
-      "x86_64-darwin": "sha256-mqHe53QP6SCFkSkTSaoORAmCYnXYsk/MqgsIv3B2nZk=",
-      "x86_64-linux": "sha256-mqHe53QP6SCFkSkTSaoORAmCYnXYsk/MqgsIv3B2nZk="
+      "aarch64-linux": "sha256-t5wMmfeH4ovVenQjdh8w1w9hf1UXRyoww76bgu0WbcA=",
+      "x86_64-darwin": "sha256-t5wMmfeH4ovVenQjdh8w1w9hf1UXRyoww76bgu0WbcA=",
+      "x86_64-linux": "sha256-t5wMmfeH4ovVenQjdh8w1w9hf1UXRyoww76bgu0WbcA="
     },
     "linux": {
-      "aarch64-linux": "sha256-6EUraGnPYhPiZZikCMZE8gDw+FAsZj5XzCsmLOLULE8=",
-      "x86_64-darwin": "sha256-2B1gVRil51sQEO65pD7To7sGa3aIzXFcQbIGoX97FJM=",
-      "x86_64-linux": "sha256-2B1gVRil51sQEO65pD7To7sGa3aIzXFcQbIGoX97FJM="
+      "aarch64-linux": "sha256-AIIB4OCOpTVQgAG5PHy8iYa/3K/N4Zatlm7CEceVXB0=",
+      "x86_64-darwin": "sha256-XtmaAH3XRY4bDRz2PbM8cVUPVj1RdH+zXxjf7OXqRLc=",
+      "x86_64-linux": "sha256-XtmaAH3XRY4bDRz2PbM8cVUPVj1RdH+zXxjf7OXqRLc="
     },
     "macos": {
-      "aarch64-linux": "sha256-rcB6lKXqmLsbI/RHAtTJgV1TJQf3w4B3tohwln0Fgw0=",
-      "x86_64-darwin": "sha256-rcB6lKXqmLsbI/RHAtTJgV1TJQf3w4B3tohwln0Fgw0=",
-      "x86_64-linux": "sha256-rcB6lKXqmLsbI/RHAtTJgV1TJQf3w4B3tohwln0Fgw0="
+      "aarch64-linux": "sha256-oetIyjp0865NyZgjvy/vWE84/wJ1bYaRmBMxivEsh0M=",
+      "x86_64-darwin": "sha256-oetIyjp0865NyZgjvy/vWE84/wJ1bYaRmBMxivEsh0M=",
+      "x86_64-linux": "sha256-oetIyjp0865NyZgjvy/vWE84/wJ1bYaRmBMxivEsh0M="
     },
     "universal": {
-      "aarch64-linux": "sha256-lgftQbVZhZtikAr6D8TaPoplUFtxE9uQgGLje4RHMlM=",
-      "x86_64-darwin": "sha256-6pQLVOewI86CkEUUp25XuPhgVKB3yQUHiusLqK1Muug=",
-      "x86_64-linux": "sha256-6pQLVOewI86CkEUUp25XuPhgVKB3yQUHiusLqK1Muug="
+      "aarch64-linux": "sha256-bG/kYUR6LRdiNeVMA5nfVOB3cBsyK4t3Il4JVhI+Ujs=",
+      "x86_64-darwin": "sha256-ehbkv243DdAltH+Eor4dzVCekgKgaiOqklyuGEm11L0=",
+      "x86_64-linux": "sha256-ehbkv243DdAltH+Eor4dzVCekgKgaiOqklyuGEm11L0="
     },
     "web": {
-      "aarch64-linux": "sha256-Fdnq1VhiGvLdqv4g3rRy3PzC2xYKozBr6kDaXeGlPLM=",
-      "x86_64-darwin": "sha256-Fdnq1VhiGvLdqv4g3rRy3PzC2xYKozBr6kDaXeGlPLM=",
-      "x86_64-linux": "sha256-Fdnq1VhiGvLdqv4g3rRy3PzC2xYKozBr6kDaXeGlPLM="
+      "aarch64-linux": "sha256-JdBOO5s+LNgqXr8juFnATpXzyXYiYqfbrXA0N2FRHqA=",
+      "x86_64-darwin": "sha256-JdBOO5s+LNgqXr8juFnATpXzyXYiYqfbrXA0N2FRHqA=",
+      "x86_64-linux": "sha256-JdBOO5s+LNgqXr8juFnATpXzyXYiYqfbrXA0N2FRHqA="
     },
     "windows": {
-      "aarch64-linux": "sha256-MRzcLlYApeKPMTSkf5ql4EuvVY8PL9asAKNSFUFA/YY=",
-      "x86_64-darwin": "sha256-MRzcLlYApeKPMTSkf5ql4EuvVY8PL9asAKNSFUFA/YY=",
-      "x86_64-linux": "sha256-MRzcLlYApeKPMTSkf5ql4EuvVY8PL9asAKNSFUFA/YY="
+      "aarch64-linux": "sha256-dxu+dVo1nazqrIuiE4/OqfZQDo0FMn8TJOAkQ63Gozg=",
+      "x86_64-darwin": "sha256-dxu+dVo1nazqrIuiE4/OqfZQDo0FMn8TJOAkQ63Gozg=",
+      "x86_64-linux": "sha256-dxu+dVo1nazqrIuiE4/OqfZQDo0FMn8TJOAkQ63Gozg="
     }
   },
   "pubspecLock": {
