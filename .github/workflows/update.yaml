@@ -35,4 +35,6 @@ jobs:
           pr-labels: |                  # Labels to be set on the PR
             dependencies
             automated
+          token: ${{ secrets.GH_TOKEN }}
+          # GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
