@@ -4,13 +4,11 @@ on:
   schedule:
     - cron: '0 0 * * 0' # runs weekly on Sunday at 00:00
 
-permissions: 
-  pull-requests: write
-  
 jobs:
   flutter:
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       issues: write
       pull-requests: write
     steps:
