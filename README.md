@@ -15,6 +15,11 @@ and an overlay:
 
 - `overlays.default`
 
+There is also binary cache hosted by [Cachix](https://mtech.cachix.org):
+
+  https://mtech.cachix.org
+  mtech.cachix.org-1:cPDMKB6bI2DjpXfsE8dOcYOdaas9afdRNhLA0MEfXuo=
+
 ## With flakes
 
 Add this flake as an input and either use:
