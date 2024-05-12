@@ -5,9 +5,9 @@
   "flutterHash": "sha256-/gA3Ip1pnhKlHF/zOLvhC/9HO6BG31KQ5bUtlZENHVw=",
   "artifactHashes": {
     "android": {
-      "aarch64-linux": "sha256-Wb0EeBCgBWCn/jPZKIsgQrdoqtJpHuibX3Kke6jfRd8=",
-      "x86_64-darwin": "sha256-Wb0EeBCgBWCn/jPZKIsgQrdoqtJpHuibX3Kke6jfRd8=",
-      "x86_64-linux": "sha256-Wb0EeBCgBWCn/jPZKIsgQrdoqtJpHuibX3Kke6jfRd8="
+      "aarch64-linux": "sha256-u0+O4PftSt9If1AMDRS/P6FQwZtsTpRGGZflhY56xAY=",
+      "x86_64-darwin": "sha256-u0+O4PftSt9If1AMDRS/P6FQwZtsTpRGGZflhY56xAY=",
+      "x86_64-linux": "sha256-u0+O4PftSt9If1AMDRS/P6FQwZtsTpRGGZflhY56xAY="
     },
     "fuchsia": {
       "aarch64-linux": "sha256-eu0BERdz53CkSexbpu3KA7O6Q4g0s9SGD3t1Snsk3Fk=",
@@ -30,9 +30,9 @@
       "x86_64-linux": "sha256-oetIyjp0865NyZgjvy/vWE84/wJ1bYaRmBMxivEsh0M="
     },
     "universal": {
-      "aarch64-linux": "sha256-5Nh2j1tKd44Fr/WkHeD+Mam2MUjNAOTj0Rwlir1boVg=",
-      "x86_64-darwin": "sha256-OCPzPhcNpdMhRzIU9h7M8Hn0VpKx6wuMtZh4168WwTA=",
-      "x86_64-linux": "sha256-OCPzPhcNpdMhRzIU9h7M8Hn0VpKx6wuMtZh4168WwTA="
+      "aarch64-linux": "sha256-bG/kYUR6LRdiNeVMA5nfVOB3cBsyK4t3Il4JVhI+Ujs=",
+      "x86_64-darwin": "sha256-ehbkv243DdAltH+Eor4dzVCekgKgaiOqklyuGEm11L0=",
+      "x86_64-linux": "sha256-ehbkv243DdAltH+Eor4dzVCekgKgaiOqklyuGEm11L0="
     },
     "web": {
       "aarch64-linux": "sha256-JdBOO5s+LNgqXr8juFnATpXzyXYiYqfbrXA0N2FRHqA=",
