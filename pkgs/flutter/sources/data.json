@@ -3,7 +3,47 @@
   "engineVersion": "55eae6864b296dd9f43b2cc7577ec256e5c32a8d",
   "dartVersion": "3.4.1",
   "flutterHash": "sha256-2vdKMyk8nk5/TlCW9S559AgnBTkk0XU2mM3F085ZKDE=",
-  "artifactHashes": {},
+  "artifactHashes": {
+    "android": {
+      "aarch64-linux": "sha256-5ei2Qi5TQco6iwi7TEpGSut0LswT5h+0WmjYkq6gDnw=",
+      "x86_64-darwin": "sha256-5ei2Qi5TQco6iwi7TEpGSut0LswT5h+0WmjYkq6gDnw=",
+      "x86_64-linux": "sha256-5ei2Qi5TQco6iwi7TEpGSut0LswT5h+0WmjYkq6gDnw="
+    },
+    "fuchsia": {
+      "aarch64-linux": "sha256-eu0BERdz53CkSexbpu3KA7O6Q4g0s9SGD3t1Snsk3Fk=",
+      "x86_64-darwin": "sha256-eu0BERdz53CkSexbpu3KA7O6Q4g0s9SGD3t1Snsk3Fk=",
+      "x86_64-linux": "sha256-eu0BERdz53CkSexbpu3KA7O6Q4g0s9SGD3t1Snsk3Fk="
+    },
+    "ios": {
+      "aarch64-linux": "sha256-sxDAcpWlipD+acoPOBUks+RBsVLeKUkMI4Nnk0A5Dlc=",
+      "x86_64-darwin": "sha256-sxDAcpWlipD+acoPOBUks+RBsVLeKUkMI4Nnk0A5Dlc=",
+      "x86_64-linux": "sha256-sxDAcpWlipD+acoPOBUks+RBsVLeKUkMI4Nnk0A5Dlc="
+    },
+    "linux": {
+      "aarch64-linux": "sha256-5WDsZwfzscezyLtJeNjB6NTFIQ/raNGo8jrk9NUJ0do=",
+      "x86_64-darwin": "sha256-bQF73zXR8JVf35kCSQ7bZ+CNJRquZcQbtqIRfM51HCs=",
+      "x86_64-linux": "sha256-bQF73zXR8JVf35kCSQ7bZ+CNJRquZcQbtqIRfM51HCs="
+    },
+    "macos": {
+      "aarch64-linux": "sha256-Yw4cTmDJvt0SCYIPOahWth1HOiTYBSDupgJqkIMmDBQ=",
+      "x86_64-darwin": "sha256-Yw4cTmDJvt0SCYIPOahWth1HOiTYBSDupgJqkIMmDBQ=",
+      "x86_64-linux": "sha256-Yw4cTmDJvt0SCYIPOahWth1HOiTYBSDupgJqkIMmDBQ="
+    },
+    "universal": {
+      "aarch64-linux": "sha256-6aBN2lJQIs5FHLj0eHIfA6l+MKp3ryaIV6/qoaTZSGM=",
+      "x86_64-darwin": "sha256-PwMzBxAGxDRXDyG46ZDZKr4iA6n+RwsAr13kuurUwcI=",
+      "x86_64-linux": "sha256-PwMzBxAGxDRXDyG46ZDZKr4iA6n+RwsAr13kuurUwcI="
+    },
+    "web": {
+      "aarch64-linux": "sha256-RigEuqCQLuwfjGEL5N7m1zq7TmM/s3veDNcvlvky8OM=",
+      "x86_64-darwin": "sha256-RigEuqCQLuwfjGEL5N7m1zq7TmM/s3veDNcvlvky8OM=",
+      "x86_64-linux": "sha256-RigEuqCQLuwfjGEL5N7m1zq7TmM/s3veDNcvlvky8OM="
+    },
+    "windows": {
+      "x86_64-darwin": "sha256-vbOgBheRWdw8pnYYQAv4nq91LfedV/0vyJVtF9del1I=",
+      "x86_64-linux": "sha256-vbOgBheRWdw8pnYYQAv4nq91LfedV/0vyJVtF9del1I="
+    }
+  },
   "pubspecLock": {
     "packages": {
       "_fe_analyzer_shared": {
