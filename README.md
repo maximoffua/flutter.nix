@@ -4,6 +4,9 @@
 
 This repository is made for fixing issues with flutter in nixpkgs, specifically [#260278](https://github.com/NixOS/nixpkgs/issues/260278).
 
+> [!IMPORTANT]
+> [nixpkgs](https://github.com/NixOS/nixpkgs/pull/336650) has already packaged latest Flutter version, which works well. This makes this repository obsolate.
+
 # Getting started
 
 This flake provides the following packages:
