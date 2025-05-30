@@ -8,7 +8,6 @@
   flutterPackages' = recurseIntoAttrs (callPackage ./flutter {
     useNixpkgsEngine = true;
   });
-  flutter = flutterPackages.stable;
 in {
   inherit flutterPackages;
   flutterPackages-bin = flutterPackages;
@@ -17,4 +16,5 @@ in {
   flutter = flutterPackages.stable;
   flutter327 = flutterPackages.v3_27;
   flutter329 = flutterPackages.v3_29;
+  flutter332 = flutterPackages.v3_32;
 }
