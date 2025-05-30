@@ -1,27 +1,74 @@
-{ callPackage, fetchzip, fetchFromGitHub, buildDartApplication, dart, lib, stdenv }:
+{
+  useNixpkgsEngine ? false,
+  callPackage,
+  fetchzip,
+  fetchFromGitHub,
+  dart,
+  lib,
+  stdenv,
+}:
 let
   mkCustomFlutter = args: callPackage ./flutter.nix args;
   wrapFlutter = flutter: callPackage ./wrapper.nix { inherit flutter; };
-  getPatches = dir:
-    let files = builtins.attrNames (builtins.readDir dir);
-    in if (builtins.pathExists dir) then map (f: dir + ("/" + f)) files else [ ];
+  getPatches =
+    dir:
+    let
+      files = builtins.attrNames (builtins.readDir dir);
+    in
+    if (builtins.pathExists dir) then map (f: dir + ("/" + f)) files else [ ];
   mkFlutter =
-    { version
-    , engineVersion
-    , dartVersion
-    , flutterHash
-    , patches
-    , pubspecLock
-    , artifactHashes
-    , ...
+    {
+      version,
+      engineVersion,
+      engineSwiftShaderHash,
+      engineSwiftShaderRev,
+      engineHashes,
+      enginePatches,
+      dartVersion,
+      flutterHash,
+      dartHash,
+      patches,
+      pubspecLock,
+      artifactHashes,
+      channel,
     }:
-      assert lib.asserts.assertMsg (lib.strings.hasPrefix dartVersion dart.version)
-        ''Dart version mismatch: (pkgs) ${builtins.toString dart.version} != ${dartVersion} (required)
-          Hint: run `pkgs/dart/update.sh <version>` to fetch required version.'';
     let
       args = {
-        inherit dart buildDartApplication;
-        inherit version engineVersion patches pubspecLock artifactHashes;
+        inherit
+          version
+          engineVersion
+          engineSwiftShaderRev
+          engineSwiftShaderHash
+          engineHashes
+          enginePatches
+          patches
+          pubspecLock
+          artifactHashes
+          useNixpkgsEngine
+          channel
+          ;
+
+        dart = dart.override {
+          version = dartVersion;
+          sources = {
+            "${dartVersion}-x86_64-linux" = fetchzip {
+              url = "https://storage.googleapis.com/dart-archive/channels/${channel}/release/${dartVersion}/sdk/dartsdk-linux-x64-release.zip";
+              sha256 = dartHash.x86_64-linux;
+            };
+            "${dartVersion}-aarch64-linux" = fetchzip {
+              url = "https://storage.googleapis.com/dart-archive/channels/${channel}/release/${dartVersion}/sdk/dartsdk-linux-arm64-release.zip";
+              sha256 = dartHash.aarch64-linux;
+            };
+            "${dartVersion}-x86_64-darwin" = fetchzip {
+              url = "https://storage.googleapis.com/dart-archive/channels/${channel}/release/${dartVersion}/sdk/dartsdk-macos-x64-release.zip";
+              sha256 = dartHash.x86_64-darwin;
+            };
+            "${dartVersion}-aarch64-darwin" = fetchzip {
+              url = "https://storage.googleapis.com/dart-archive/channels/${channel}/release/${dartVersion}/sdk/dartsdk-macos-arm64-release.zip";
+              sha256 = dartHash.aarch64-darwin;
+            };
+          };
+        };
         src = fetchFromGitHub {
           owner = "flutter";
           repo = "flutter";
@@ -30,23 +77,42 @@ let
         };
       };
     in
-    (mkCustomFlutter args).overrideAttrs (prev: next: {
-      passthru = next.passthru // rec {
-        inherit wrapFlutter mkCustomFlutter mkFlutter;
-        buildFlutterApplication = callPackage ../build-support/flutter {
-          # Package a minimal version of Flutter that only uses Linux desktop release artifacts.
-          flutter = (wrapFlutter (mkCustomFlutter args)).override {
-            supportedTargetFlutterPlatforms = [ "universal" "linux" ];
+    (mkCustomFlutter args).overrideAttrs (
+      prev: next: {
+        passthru = next.passthru // rec {
+          inherit wrapFlutter mkCustomFlutter mkFlutter;
+          buildFlutterApplication = callPackage ./build-support/build-flutter-application.nix {
+            flutter = wrapFlutter (mkCustomFlutter args);
           };
         };
-      };
-    });
+      }
+    );
 
-  data = lib.importJSON (./sources + "/data.json");
+  flutterVersions = lib.mapAttrs' (
+    version: _:
+    let
+      versionDir = ./versions + "/${version}";
+      data = lib.importJSON (versionDir + "/data.json");
+    in
+    lib.nameValuePair "v${version}" (
+      wrapFlutter (
+        mkFlutter (
+          {
+            patches = (getPatches ./patches) ++ (getPatches (versionDir + "/patches"));
+            enginePatches = (getPatches ./engine/patches) ++ (getPatches (versionDir + "/engine/patches"));
+          }
+          // data
+        )
+      )
+    )
+  ) (builtins.readDir ./versions);
+
+  stableFlutterVersions = lib.attrsets.filterAttrs (_: v: v.channel == "stable") flutterVersions;
+  betaFlutterVersions = lib.attrsets.filterAttrs (_: v: v.channel == "beta") flutterVersions;
 in
-{
+flutterVersions
+// {
+  beta = flutterVersions.${lib.last (lib.naturalSort (builtins.attrNames betaFlutterVersions))};
+  stable = flutterVersions.${lib.last (lib.naturalSort (builtins.attrNames stableFlutterVersions))};
   inherit wrapFlutter mkFlutter;
-  unwrapped = mkFlutter ({
-    patches = getPatches ./patches;
-  } // data);
 }

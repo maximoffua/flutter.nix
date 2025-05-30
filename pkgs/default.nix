@@ -1,24 +1,20 @@
-{
-  pkgs,
-  lib,
-  ...
-}: let
+{ pkgs, lib, ... }: let
   inherit (lib) recurseIntoAttrs;
   inherit (pkgs) callPackage;
-  support =
-    recurseIntoAttrs (callPackage ./build-support/dart {})
-    // (callPackage ./build-support/flutter {});
-
-  dart = callPackage ./dart {};
 
   flutterPackages = recurseIntoAttrs (callPackage ./flutter {
-    inherit (support) buildDartApplication;
-    inherit dart;
+    useNixpkgsEngine = false;
   });
-  flutter-unwrapped = flutterPackages.unwrapped;
-  flutter = flutterPackages.wrapFlutter flutter-unwrapped;
+  flutterPackages' = recurseIntoAttrs (callPackage ./flutter {
+    useNixpkgsEngine = true;
+  });
+  flutter = flutterPackages.stable;
 in {
-  inherit dart flutter flutter-unwrapped;
-  inherit (support) buildDartApplication buildFlutterApplication pub2nix dartHooks;
-  default = flutter;
+  inherit flutterPackages;
+  flutterPackages-bin = flutterPackages;
+  flutterPackages-source = flutterPackages';
+  default = flutterPackages'.stable;
+  flutter = flutterPackages.stable;
+  flutter327 = flutterPackages.v3_27;
+  flutter329 = flutterPackages.v3_29;
 }

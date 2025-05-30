@@ -1,12 +1,11 @@
-{ lib
-, stdenv
-, callPackage
-, autoPatchelfHook
-, src
+{
+  lib,
+  stdenv,
+  callPackage,
+  autoPatchelfHook,
+  src,
 }:
-let
-  override = ./overrides + "/${src.flutterPlatform}.nix";
-in
+
 (stdenv.mkDerivation {
   inherit (src) name;
   inherit src;
@@ -18,11 +17,14 @@ in
 
     mkdir -p "$out/bin"
     cp -r . "$out/bin/cache"
+    rm -f "$out/bin/cache/flutter.version.json"
 
     runHook postInstall
   '';
-}).overrideAttrs (
-  if builtins.pathExists override
-  then callPackage override { }
-  else ({ ... }: { })
-)
+}).overrideAttrs
+  (
+    if builtins.pathExists (./overrides + "/${src.flutterPlatform}.nix") then
+      callPackage (./overrides + "/${src.flutterPlatform}.nix") { }
+    else
+      ({ ... }: { })
+  )

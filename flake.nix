@@ -17,15 +17,7 @@
         flake-parts.flakeModules.easyOverlay
       ];
 
-      perSystem = {
-        config,
-        self',
-        inputs',
-        pkgs,
-        system,
-        lib,
-        ...
-      }: let
+      perSystem = { config, self', inputs', pkgs, system, lib, ... }: let
         ownPkgs = import ./pkgs {inherit pkgs lib;};
         mkApp = name: let
           pkg = self'.packages.${name};
@@ -35,20 +27,10 @@
         };
       in {
         overlayAttrs = {
-          inherit
-            (ownPkgs)
-            dart
-            flutter
-            buildDartApplication
-            buildFlutterApplication
-            pub2nix
-            dartHooks
-            ;
+          inherit (self'.packages) flutter flutter327 flutter329
+            flutterPackages flutterPackages-bin flutterPackages-source;
         };
-        packages = {
-          inherit (ownPkgs) flutter dart flutter-unwrapped;
-          default = ownPkgs.flutter;
-        };
+        packages = ownPkgs;
 
         apps = rec {
           flutter = mkApp "flutter";
