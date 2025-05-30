@@ -20,8 +20,8 @@ and an overlay:
 
 There is also binary cache hosted by [Cachix](https://mtech.cachix.org):
 
-  https://mtech.cachix.org
-  mtech.cachix.org-1:cPDMKB6bI2DjpXfsE8dOcYOdaas9afdRNhLA0MEfXuo=
+https://mtech.cachix.org  
+`mtech.cachix.org-1:cPDMKB6bI2DjpXfsE8dOcYOdaas9afdRNhLA0MEfXuo=`
 
 ## With flakes
 
