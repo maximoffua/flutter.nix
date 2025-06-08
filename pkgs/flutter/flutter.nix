@@ -137,6 +137,9 @@ let
       rm -rf $out/bin/cache/dart-sdk
       ln -sf ${dart} $out/bin/cache/dart-sdk
 
+      # Create engine.realm required by Flutter Gradle plugin
+      touch $out/bin/cache/engine.realm
+
       # The regular launchers are designed to download/build/update SDK
       # components, and are not very useful in Nix.
       # Replace them with simple links and wrappers.
