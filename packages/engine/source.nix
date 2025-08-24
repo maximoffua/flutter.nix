@@ -88,7 +88,7 @@ runCommand "flutter-engine-source-${version}-${buildPlatform.system}-${targetPla
   }
   (
     ''
-      source ${../../build-support/deterministic-git}
+      source ${../flutter/build-support/deterministic-git}
       export -f clean_git
       export -f make_deterministic_repo
 

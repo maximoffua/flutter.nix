@@ -1,14 +1,14 @@
 {
   callPackage,
-  dartSdkVersion,
+  dartSdkVersion ? dart.version,
   flutterVersion,
-  swiftshaderHash,
-  swiftshaderRev,
+  swiftshaderHash ? "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+  swiftshaderRev ? "0",
   version,
-  hashes,
-  url,
-  patches,
-  runtimeModes,
+  hashes ? {},
+  url ? "https://github.com/flutter/flutter.git@${version}",
+  extraPatches ? [],
+  runtimeModes ? ["release" "debug"],
   isOptimized ? null,
   lib,
   stdenv,
@@ -17,6 +17,13 @@
   altRuntimeMode ? null,
 }@args:
 let
+  getPatches =
+    dir:
+    let
+      files = builtins.attrNames (builtins.readDir dir);
+    in
+    if (builtins.pathExists dir) then map (f: dir + ("/" + f)) files else [ ];
+  patches = (getPatches ./patches) ++ extraPatches;
   mainRuntimeMode = args.mainRuntimeMode or builtins.elemAt runtimeModes 0;
   altRuntimeMode = args.altRuntimeMode or builtins.elemAt runtimeModes 1;
 

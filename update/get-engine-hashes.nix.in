@@ -1,6 +1,6 @@
 { callPackage, symlinkJoin, stdenv, lib }:
 let
-  nixpkgsRoot = "@nixpkgs_root@";
+  flakeRoot = "@flake_root@";
   version = "@flutter_version@";
   engineVersion = "@engine_version@";
 
@@ -16,7 +16,7 @@ let
           acc
           ++ (map
             (targetPlatform:
-              callPackage "${nixpkgsRoot}/pkgs/development/compilers/flutter/engine/source.nix" {
+              callPackage "${flakeRoot}/packages/engine/source.nix" {
                 targetPlatform = lib.systems.elaborate targetPlatform;
                 hostPlatform = lib.systems.elaborate buildPlatform;
                 buildPlatform = lib.systems.elaborate buildPlatform;

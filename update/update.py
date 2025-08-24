@@ -16,15 +16,24 @@ import json
 
 FAKE_HASH = 'sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='
 
-NIXPKGS_ROOT = subprocess.Popen(['git',
+FLAKE_ROOT = subprocess.Popen(['git',
                                  'rev-parse',
                                  '--show-toplevel'],
                                 stdout=subprocess.PIPE,
                                 text=True).communicate()[0].strip()
 
+codeTemplate = lambda target: f'''let
+    flake = builtins.getFlake "{FLAKE_ROOT}";
+    inherit (flake.inputs) nixpkgs;
+    pkgs = import nixpkgs {{
+        system = builtins.currentSystem;
+        overlays = [flake.overlays.default];
+    }};
+in pkgs.callPackage {target} {{}}'''
+
 
 def load_code(name, **kwargs):
-    with open(f"{NIXPKGS_ROOT}/update/{name}.in", 'r') as f:
+    with open(f"{FLAKE_ROOT}/update/{name}.in", 'r') as f:
         code = f.read()
 
     for (key, value) in kwargs.items():
@@ -40,13 +49,17 @@ def nix_build(code):
     temp.flush()
     os.fsync(temp.fileno())
 
+    print(f"nix-build --impure --no-out-link --expr '{codeTemplate(temp.name)}'")
+
     process = subprocess.Popen(
         [
             "nix-build",
             "--impure",
             "--no-out-link",
             "--expr",
-            f'let flake = builtins.getFlake "/home/smaximov/src/flutter.nix"; nixpkgs = builtins.getFlake "nixpkgs"; pkgs = import nixpkgs {{system = builtins.currentSystem;}}; in pkgs.callPackage {temp.name} {{}}'],
+            codeTemplate(temp.name),
+            # f'let flake = builtins.getFlake "{FLAKE_ROOT}"; inherit (flake.inputs) nixpkgs; pkgs = import nixpkgs {{system = builtins.currentSystem;}}; in pkgs.callPackage {temp.name} {{}}',
+        ],
         stdout=subprocess.PIPE,
         text=True)
 
@@ -61,6 +74,7 @@ def nix_build_to_fail(code):
     temp.write(code)
     temp.flush()
     os.fsync(temp.fileno())
+    print(f"nix-build --impure --no-link --keep-going --expr '{codeTemplate(temp.name)}'")
     process = subprocess.Popen(
         [
             "nix-build",
@@ -68,7 +82,8 @@ def nix_build_to_fail(code):
             "--keep-going",
             "--no-link",
             "--expr",
-            f'let flake = builtins.getFlake "/home/smaximov/src/flutter.nix"; nixpkgs = builtins.getFlake "nixpkgs"; pkgs = import nixpkgs {{system = builtins.currentSystem;}}; in pkgs.callPackage {temp.name} {{}}',
+            codeTemplate(temp.name),
+            # f'let flake = builtins.getFlake "{FLAKE_ROOT}"; inherit (flake.inputs) nixpkgs; pkgs = import nixpkgs {{system = builtins.currentSystem;}}; in pkgs.callPackage {temp.name} {{}}',
         ],
         stderr=subprocess.PIPE,
         text=True)
@@ -88,7 +103,7 @@ def nix_build_to_fail(code):
 
 def get_engine_hashes(engine_version, flutter_version):
     code = load_code("get-engine-hashes.nix",
-                     nixpkgs_root=NIXPKGS_ROOT,
+                     flake_root=FLAKE_ROOT,
                      flutter_version=flutter_version,
                      engine_version=engine_version)
 
@@ -115,7 +130,7 @@ def get_engine_hashes(engine_version, flutter_version):
 
 def get_artifact_hashes(flutter_compact_version):
     code = load_code("get-artifact-hashes.nix",
-                     nixpkgs_root=NIXPKGS_ROOT,
+                     flake_root=FLAKE_ROOT,
                      flutter_compact_version=flutter_compact_version)
 
     stderr = nix_build_to_fail(code)
@@ -181,7 +196,6 @@ def get_flutter_hash_and_src(flutter_version):
 def get_pubspec_lock(flutter_compact_version, flutter_src):
     code = load_code(
         "get-pubspec-lock.nix",
-        flutter_compact_version=flutter_compact_version,
         flutter_src=flutter_src,
         hash="")
 
@@ -220,7 +234,6 @@ def get_engine_swiftshader_hash(engine_swiftshader_rev):
     return pattern.findall(stderr)[0]
 
 def write_data(
-        nixpkgs_flutter_version_directory,
         flutter_version,
         channel,
         engine_hash,
@@ -232,7 +245,7 @@ def write_data(
         flutter_hash,
         artifact_hashes,
         pubspec_lock):
-    with open(f"{nixpkgs_flutter_version_directory}/data.json", "w") as f:
+    with open(f"{FLAKE_ROOT}/versionInfo.json", "w") as f:
         f.write(json.dumps({
             "version": flutter_version,
             "engineVersion": engine_hash,
@@ -312,7 +325,7 @@ def main():
 
     (flutter_version, engine_hash, dart_version, channel) = find_versions(args.version, args.channel)
 
-    flutter_compact_version = '_'.join(flutter_version.split('.')[:2])
+    flutter_compact_version = '.'.join(flutter_version.split('.')[:2])
 
     if args.artifact_hashes:
         print(
@@ -326,17 +339,15 @@ def main():
     print(f"Engine hash: {engine_hash}")
     print(f"Dart version: {dart_version}")
 
+    print(">> getting dart hash")
     dart_hash = get_dart_hashes(dart_version, channel)
+    print(">> getting flutter hash and src")
     (flutter_hash, flutter_src) = get_flutter_hash_and_src(flutter_version)
 
-    nixpkgs_flutter_version_directory = f"{NIXPKGS_ROOT}/pkgs/flutter/versions/{flutter_compact_version}"
-
-    if os.path.exists(f"{nixpkgs_flutter_version_directory}/data.json"):
-        os.remove(f"{nixpkgs_flutter_version_directory}/data.json")
-    os.makedirs(nixpkgs_flutter_version_directory, exist_ok=True)
+    if os.path.exists(f"{FLAKE_ROOT}/versionInfo.json"):
+        os.remove(f"{FLAKE_ROOT}/versionInfo.json")
 
     common_data_args = {
-        "nixpkgs_flutter_version_directory": nixpkgs_flutter_version_directory,
         "flutter_version": flutter_version,
         "channel": channel,
         "dart_version": dart_version,
@@ -353,6 +364,7 @@ def main():
         engine_swiftshader_rev='0',
         **common_data_args)
 
+    print(">> getting pubspec.lock")
     pubspec_lock = get_pubspec_lock(flutter_compact_version, flutter_src)
 
     write_data(
@@ -363,6 +375,7 @@ def main():
         engine_swiftshader_rev='0',
         **common_data_args)
 
+    print(">> getting artifact hashes")
     artifact_hashes = get_artifact_hashes(flutter_compact_version)
 
     write_data(
@@ -373,6 +386,7 @@ def main():
         engine_swiftshader_rev='0',
         **common_data_args)
 
+    print(">> getting engine hashes")
     engine_hashes = get_engine_hashes(engine_hash, flutter_version)
 
     write_data(
@@ -383,7 +397,9 @@ def main():
         engine_swiftshader_rev='0',
         **common_data_args)
 
+    print(">> getting swiftshader rev & hash")
     engine_swiftshader_rev = get_engine_swiftshader_rev(engine_hash)
+    print(">> getting swiftshader hash")
     engine_swiftshader_hash = get_engine_swiftshader_hash(engine_swiftshader_rev)
 
     write_data(
@@ -393,6 +409,11 @@ def main():
         engine_swiftshader_hash=engine_swiftshader_hash,
         engine_swiftshader_rev=engine_swiftshader_rev,
         **common_data_args)
+
+    print(f"FLUTTER_CHANNEL={channel}")
+    print(f"FLUTTER_VERSION={flutter_version}")
+    print(f"FLUTTER_VERSION_SHORT={flutter_compact_version}")
+    print(f"DART_VERSION={dart_version}")
 
 
 if __name__ == "__main__":

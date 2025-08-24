@@ -1,12 +1,11 @@
 { callPackage
-, flutterPackages
+, flutter
 , lib
 , symlinkJoin
 ,
 }:
 let
-  nixpkgsRoot = "@nixpkgs_root@";
-  flutterCompactVersion = "@flutter_compact_version@";
+  flakeRoot = "@flake_root@";
 
   flutterPlatforms = [
     "android"
@@ -32,8 +31,8 @@ let
           acc
           ++ (map
             (systemPlatform:
-              callPackage "${nixpkgsRoot}/pkgs/development/compilers/flutter/artifacts/fetch-artifacts.nix" {
-                flutter = flutterPackages."v${flutterCompactVersion}";
+              callPackage "${flakeRoot}/packages/flutter/artifacts/fetch-artifacts.nix" {
+                inherit flutter;
                 inherit flutterPlatform;
                 inherit systemPlatform;
                 hash = lib.fakeSha256;

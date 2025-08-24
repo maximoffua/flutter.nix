@@ -65,12 +65,12 @@ write_for_platform() {
     URL="$BASE_URL_FETCHED/$URL_POSTFIX"
     log "URL for $DART_PLATFORM: $URL"
 
-    HASH=$(nix-prefetch-url "$URL" --type sha256)
+    HASH=$(nix-prefetch-url "$URL" --type sha256 | tail -1 | xargs nix hash convert --hash-algo sha256)
     log "hash for platform $platform: $HASH"
 
     FETCHER="  \"\${version}-$platform\" = fetchurl {
     url = \"$BASE_URL_WRITTEN/$URL_POSTFIX\";
-    sha256 = \"$HASH\";
+    hash = \"$HASH\";
   };"
 
     echo "$FETCHER" >> $SRC_FILE
@@ -87,7 +87,7 @@ declare -A DARWIN_PLATFORMS=(["aarch64-darwin"]="$AARCH64"
         ["x86_64-darwin"]="$X8664")
 
 declare -A LIN_PLATFORMS=( ["x86_64-linux"]="$X8664"
-        ["i686-linux"]="$I686"
+        # ["i686-linux"]="$I686"
         ["aarch64-linux"]="$AARCH64")
 
 write_for_platform "DARWIN_PLATFORMS" "macos"

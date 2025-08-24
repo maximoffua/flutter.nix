@@ -1,20 +1,8 @@
 {
   useNixpkgsEngine ? false,
   version,
+  engine ? null,
   engineVersion,
-  engineHashes ? { },
-  engineUrl ?
-    if lib.versionAtLeast version "3.29" then
-      "https://github.com/flutter/flutter.git@${engineVersion}"
-    else
-      "https://github.com/flutter/engine.git@${engineVersion}",
-  enginePatches ? [ ],
-  engineRuntimeModes ? [
-    "release"
-    "debug"
-  ],
-  engineSwiftShaderHash,
-  engineSwiftShaderRev,
   patches,
   channel,
   dart,
@@ -33,25 +21,6 @@
 }@args:
 
 let
-  engine =
-    if args.useNixpkgsEngine or false then
-      callPackage ./engine/default.nix {
-        inherit (args) dart;
-        dartSdkVersion = args.dart.version;
-        flutterVersion = version;
-        swiftshaderRev = engineSwiftShaderRev;
-        swiftshaderHash = engineSwiftShaderHash;
-        version = engineVersion;
-        hashes = engineHashes;
-        url = engineUrl;
-        patches = enginePatches;
-        runtimeModes = engineRuntimeModes;
-      }
-    else
-      null;
-
-  dart = if args.useNixpkgsEngine or false then engine.dart else args.dart;
-
   flutterTools =
     args.flutterTools or (callPackage ./flutter-tools.nix {
       inherit dart version;
@@ -94,7 +63,7 @@ let
       GIT_AUTHOR_EMAIL= GIT_COMMITTER_EMAIL= \
       GIT_AUTHOR_DATE='1/1/1970 00:00:00 +0000' GIT_COMMITTER_DATE='1/1/1970 00:00:00 +0000' \
         git commit --allow-empty -m "Initial commit"
-      (. '${../build-support/deterministic-git}'; make_deterministic_repo .)
+      (. '${./build-support/deterministic-git}'; make_deterministic_repo .)
 
       mkdir -p bin/cache
 
@@ -194,6 +163,7 @@ let
         natively compiled applications for mobile, web, and desktop from a single codebase.
       '';
       homepage = "https://flutter.dev";
+      mainProgram = "flutter";
       license = licenses.bsd3;
       platforms = [
         "x86_64-linux"
