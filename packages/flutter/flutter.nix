@@ -27,6 +27,7 @@ let
       flutterSrc = src;
       inherit patches;
       inherit pubspecLock;
+      inherit engineVersion;
       systemPlatform = stdenv.hostPlatform.system;
     });
 

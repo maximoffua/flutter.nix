@@ -35,10 +35,10 @@ diff --git a/packages/flutter_tools/bin/xcode_backend.sh b/packages/flutter_tool
 index 2889d7c8e4..48b9d06c6e 100755
 --- a/packages/flutter_tools/bin/xcode_backend.sh
 +++ b/packages/flutter_tools/bin/xcode_backend.sh
-@@ -6,24 +6,7 @@
+@@ -13,24 +13,7 @@
  # exit on error, or usage of unset var
  set -euo pipefail
- 
+
 -# Needed because if it is set, cd may print the path it changed to.
 -unset CDPATH
 -
@@ -59,11 +59,10 @@ index 2889d7c8e4..48b9d06c6e 100755
 -FLUTTER_ROOT="$BIN_DIR/../../.."
 -DART="$FLUTTER_ROOT/bin/dart"
 -
--"$DART" "$BIN_DIR/xcode_backend.dart" "$@"
+-"$DART" "$BIN_DIR/xcode_backend.dart" "$@" "ios"
 +# Run `dart ./xcode_backend.dart` with the dart from $FLUTTER_ROOT.
 +dart="${FLUTTER_ROOT}/bin/dart"
 +xcode_backend_dart="${BASH_SOURCE[0]%.sh}.dart"
-+exec "${dart}" "${xcode_backend_dart}" "$@"
++exec "${dart}" "${xcode_backend_dart}" "$@" "ios"
 -- 
 2.46.0
-

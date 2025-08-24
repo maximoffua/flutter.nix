@@ -56,11 +56,11 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
      groovy
 --- a/packages/flutter_tools/lib/src/android/gradle.dart
 +++ b/packages/flutter_tools/lib/src/android/gradle.dart
-@@ -456,9 +456,9 @@ class AndroidGradleBuilder implements AndroidBuilder {
+@@ -474,9 +474,9 @@ class AndroidGradleBuilder implements AndroidBuilder {
      // from the local.properties file.
      updateLocalProperties(project: project, buildInfo: androidBuildInfo.buildInfo);
  
--    final List<String> options = <String>[];
+-    final options = <String>[];
 -
 -    final String gradleExecutablePath = _gradleUtils.getExecutable(project);
 +    final [String gradleExecutablePath, ...List<String> options] = _gradleUtils.getExecutable(
@@ -69,17 +69,17 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
  
      // All automatically created files should exist.
      if (configOnly) {
-@@ -781,7 +781,7 @@ class AndroidGradleBuilder implements AndroidBuilder {
+@@ -797,7 +797,7 @@ class AndroidGradleBuilder implements AndroidBuilder {
        'aar_init_script.gradle',
      );
-     final List<String> command = <String>[
+     final command = <String>[
 -      _gradleUtils.getExecutable(project),
 +      ..._gradleUtils.getExecutable(project),
        '-I=$initScript',
        '-Pflutter-root=$flutterRoot',
        '-Poutput-dir=${outputDirectory.path}',
-@@ -896,6 +896,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
-     final List<String> results = <String>[];
+@@ -912,6 +912,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
+     final results = <String>[];
  
      try {
 +      final [String gradleExecutablePath, ...List<String> options] = _gradleUtils.getExecutable(
@@ -89,7 +89,7 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
        exitCode = await _runGradleTask(
          _kBuildVariantTaskName,
          preRunTask: () {
-@@ -911,10 +915,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
+@@ -927,10 +931,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
              ),
            );
          },
@@ -102,9 +102,9 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
          outputParser: (String line) {
            if (_kBuildVariantRegex.firstMatch(line) case final RegExpMatch match) {
              results.add(match.namedGroup(_kBuildVariantRegexGroupName)!);
-@@ -948,6 +952,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
+@@ -964,6 +968,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
      late Stopwatch sw;
-     int exitCode = 1;
+     var exitCode = 1;
      try {
 +      final [String gradleExecutablePath, ...List<String> options] = _gradleUtils.getExecutable(
 +        project,
@@ -113,7 +113,7 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
        exitCode = await _runGradleTask(
          taskName,
          preRunTask: () {
-@@ -963,10 +971,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
+@@ -979,10 +987,10 @@ class AndroidGradleBuilder implements AndroidBuilder {
              ),
            );
          },
@@ -128,9 +128,9 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
        _logger.printError(error.toString());
 --- a/packages/flutter_tools/lib/src/android/gradle_errors.dart
 +++ b/packages/flutter_tools/lib/src/android/gradle_errors.dart
-@@ -240,7 +240,12 @@ final GradleHandledError flavorUndefinedHandler = GradleHandledError(
-     required bool usesAndroidX,
-   }) async {
+@@ -228,7 +228,12 @@ final flavorUndefinedHandler = GradleHandledError(
+   },
+   handler: ({required String line, required FlutterProject project, required bool usesAndroidX}) async {
      final RunResult tasksRunResult = await globals.processUtils.run(
 -      <String>[globals.gradleUtils!.getExecutable(project), 'app:tasks', '--all', '--console=auto'],
 +      <String>[
@@ -152,7 +152,7 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
  import 'package:process/process.dart';
  import 'package:unified_analytics/unified_analytics.dart';
  
-@@ -154,9 +155,29 @@ class GradleUtils {
+@@ -197,9 +198,29 @@ class GradleUtils {
    final Logger _logger;
    final OperatingSystemUtils _operatingSystemUtils;
  
@@ -183,7 +183,7 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
      final Directory androidDir = project.android.hostAppGradleRoot;
      injectGradleWrapperIfNeeded(androidDir);
  
-@@ -167,7 +188,7 @@ class GradleUtils {
+@@ -210,7 +231,7 @@ class GradleUtils {
        // If the Gradle executable doesn't have execute permission,
        // then attempt to set it.
        _operatingSystemUtils.makeExecutable(gradle);
@@ -194,7 +194,7 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
        'Unable to locate gradlew script. Please check that ${gradle.path} '
 --- a/packages/flutter_tools/test/general.shard/android/android_gradle_builder_test.dart
 +++ b/packages/flutter_tools/test/general.shard/android/android_gradle_builder_test.dart
-@@ -2740,8 +2740,8 @@ Gradle Crashed
+@@ -2606,8 +2606,8 @@ Gradle Crashed
  
  class FakeGradleUtils extends Fake implements GradleUtils {
    @override
@@ -207,7 +207,7 @@ Changing the `GradleUtils.getExecutable` function signature is a delibarate choi
  
 --- a/packages/flutter_tools/test/general.shard/android/gradle_errors_test.dart
 +++ b/packages/flutter_tools/test/general.shard/android/gradle_errors_test.dart
-@@ -1580,8 +1580,8 @@ Platform fakePlatform(String name) {
+@@ -1633,8 +1633,8 @@ Platform fakePlatform(String name) {
  
  class FakeGradleUtils extends Fake implements GradleUtils {
    @override
